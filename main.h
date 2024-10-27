@@ -9,20 +9,20 @@
 #define color_blue 0,0,255
 #define color_green 0,255,0
 #define color_white 255,255,255
-
 #define main() WINAPI WinMain(HINSTANCE Instance, HINSTANCE PreviousInstance, LPSTR CommandLine, int CmdShow)
 
 #include <stdio.h> 
 #include<windows.h>
 #include<stdbool.h>
+
+
 BOOL run = true;
 HWND gGameWindow;
 RECT windowRect;
 int windowWidth = 640;
 int windowHeight = 480;
 BOOL GameStart = 1;
-
-
+MSG Message = {0};
 
 
 void fill_screen(BYTE , BYTE , BYTE );
@@ -30,15 +30,14 @@ void set_point(int , int , BYTE , BYTE , BYTE );
 void Render(void);
 void checkWindowSize(void);
 
- MSG Message = {0};
- 
- typedef struct GameBitmap
+
+typedef struct GameBitmap
  {
     BITMAPINFO BitmapInfo;
     void *memory;
  }GameBitmap;
- 
  GameBitmap gDrawingSurface;
+
 
 LRESULT CALLBACK MainWindowProc(HWND WindowHandle,UINT Message,       
     WPARAM wParam,LPARAM lParam)  
@@ -152,55 +151,3 @@ void checkWindowSize()
  windowWidth = windowRect.right - windowRect.left;
  windowHeight = windowRect.bottom - windowRect.top;
 }
-
-void set_line(int x1, int y1, int x2, int y2,int a1,int b1,int c1)
-	{
-		int x, y, dx, dy, dx1, dy1, px, py, xe, ye, i;
-		dx = x2 - x1; dy = y2 - y1;
-		dx1 = abs(dx); dy1 = abs(dy);
-		px = 2 * dy1 - dx1;	py = 2 * dx1 - dy1;
-		if (dy1 <= dx1)
-		{
-			if (dx >= 0)
-				{ x = x1; y = y1; xe = x2; }
-			else
-				{ x = x2; y = y2; xe = x1;}
-
-			 set_point(x,y,0,0,0);
-			
-			for (i = 0; x<xe; i++)
-			{
-				x = x + 1;
-				if (px<0)
-					px = px + 2 * dy1;
-				else
-				{
-					if ((dx<0 && dy<0) || (dx>0 && dy>0)) y = y + 1; else y = y - 1;
-					px = px + 2 * (dy1 - dx1);
-				}
-				set_point(x,y,a1,b1,c1);
-			}
-		}
-		else
-		{
-			if (dy >= 0)
-				{ x = x1; y = y1; ye = y2; }
-			else
-				{ x = x2; y = y2; ye = y1; }
-
-			set_point(x,y,0,0,0);
-
-			for (i = 0; y<ye; i++)
-			{
-				y = y + 1;
-				if (py <= 0)
-					py = py + 2 * dx1;
-				else
-				{
-					if ((dx<0 && dy<0) || (dx>0 && dy>0)) x = x + 1; else x = x - 1;
-					py = py + 2 * (dx1 - dy1);
-				}
-			set_point(x,y,a1,b1,c1);
-			}
-		}
-	}
