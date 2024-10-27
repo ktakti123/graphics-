@@ -10,10 +10,12 @@
 #define color_green 0,255,0
 #define color_white 255,255,255
 
+#define main() WINAPI WinMain(HINSTANCE Instance, HINSTANCE PreviousInstance, LPSTR CommandLine, int CmdShow)
+
 #include <stdio.h> 
 #include<windows.h>
 #include<stdbool.h>
-BOOL g_GameIsRunning;
+BOOL run = true;
 HWND gGameWindow;
 RECT windowRect;
 int windowWidth = 640;
@@ -23,8 +25,8 @@ BOOL GameStart = 1;
 
 
 
-void FillScreen(BYTE , BYTE , BYTE );
-void SetPoint(int , int , BYTE , BYTE , BYTE );
+void fill_screen(BYTE , BYTE , BYTE );
+void set_point(int , int , BYTE , BYTE , BYTE );
 void Render(void);
 void checkWindowSize(void);
 
@@ -50,7 +52,7 @@ LRESULT CALLBACK MainWindowProc(HWND WindowHandle,UINT Message,
             checkWindowSize();
             return 0;
         case WM_DESTROY: 
-            g_GameIsRunning = FALSE;
+            run = FALSE;
             PostQuitMessage(0); 
             return 0; 
         default: 
@@ -59,7 +61,7 @@ LRESULT CALLBACK MainWindowProc(HWND WindowHandle,UINT Message,
     return 0; 
 }
 
-DWORD CreateMainGameWindow(void)
+DWORD start(void)
 {
 
     WNDCLASSEXA WindowClass = {0};
@@ -110,11 +112,11 @@ void Render(void)
 
     // Release device context
     ReleaseDC(gGameWindow, DeviceContext);
-
+    Sleep(1);
 }
 
 
-void FillScreen(BYTE red, BYTE green, BYTE blue)
+void fill_screen(BYTE red, BYTE green, BYTE blue)
 {
     // Fill the memory with the desired color
     for (int y = 0; y < GameResHeight; ++y)
@@ -134,7 +136,7 @@ void FillScreen(BYTE red, BYTE green, BYTE blue)
     }
 }
 
-void SetPoint(int x , int y, BYTE red, BYTE green, BYTE blue)
+void set_point(int x , int y, BYTE red, BYTE green, BYTE blue)
 {
             int pixelIndex = (y * GameResWidth + x) * 4;
             BYTE *pixel = (BYTE *)gDrawingSurface.memory + pixelIndex;
@@ -151,7 +153,7 @@ void checkWindowSize()
  windowHeight = windowRect.bottom - windowRect.top;
 }
 
-void SetLine(int x1, int y1, int x2, int y2,int a1,int b1,int c1)
+void set_line(int x1, int y1, int x2, int y2,int a1,int b1,int c1)
 	{
 		int x, y, dx, dy, dx1, dy1, px, py, xe, ye, i;
 		dx = x2 - x1; dy = y2 - y1;
@@ -164,7 +166,7 @@ void SetLine(int x1, int y1, int x2, int y2,int a1,int b1,int c1)
 			else
 				{ x = x2; y = y2; xe = x1;}
 
-			 SetPoint(x,y,0,0,0);
+			 set_point(x,y,0,0,0);
 			
 			for (i = 0; x<xe; i++)
 			{
@@ -176,7 +178,7 @@ void SetLine(int x1, int y1, int x2, int y2,int a1,int b1,int c1)
 					if ((dx<0 && dy<0) || (dx>0 && dy>0)) y = y + 1; else y = y - 1;
 					px = px + 2 * (dy1 - dx1);
 				}
-				SetPoint(x,y,a1,b1,c1);
+				set_point(x,y,a1,b1,c1);
 			}
 		}
 		else
@@ -186,7 +188,7 @@ void SetLine(int x1, int y1, int x2, int y2,int a1,int b1,int c1)
 			else
 				{ x = x2; y = y2; ye = y1; }
 
-			SetPoint(x,y,0,0,0);
+			set_point(x,y,0,0,0);
 
 			for (i = 0; y<ye; i++)
 			{
@@ -198,7 +200,7 @@ void SetLine(int x1, int y1, int x2, int y2,int a1,int b1,int c1)
 					if ((dx<0 && dy<0) || (dx>0 && dy>0)) x = x + 1; else x = x - 1;
 					py = py + 2 * (dx1 - dy1);
 				}
-			SetPoint(x,y,a1,b1,c1);
+			set_point(x,y,a1,b1,c1);
 			}
 		}
 	}
