@@ -29,6 +29,7 @@ void fill_screen(BYTE , BYTE , BYTE );
 void set_point(int , int , BYTE , BYTE , BYTE );
 void Render(void);
 void checkWindowSize(void);
+void draw_line(int , int , int , int);
 
 
 typedef struct GameBitmap
@@ -151,3 +152,63 @@ void checkWindowSize()
  windowWidth = windowRect.right - windowRect.left;
  windowHeight = windowRect.bottom - windowRect.top;
 }
+void draw_line(int x1 , int y1 , int x2 , int y2)
+{
+  int sx = x2-x1;
+  int sy = y2-y1;
+  int dx = abs(sx);
+  int dy = abs(sy);
+  int k ; 
+  int xn = x1;
+  int yn = y1;
+  if (dx>=dy)
+   k = 2 * sy - sx;
+  else
+  k = 2 * sx - sy;
+  int dg = (dx>dy)? dx:dy;
+  for (int i = 0 ; i <=dg ; i++)
+  {
+   if (k>0){
+      if(dx>=dy){
+         k = k+ 2*dy - 2*dx;
+      }
+      else{
+         k = k + 2*dx - 2*dy;
+      }
+      if (sx < 0)
+      xn = xn-1;
+      else
+      xn = xn+1;
+
+      if(sy<0)
+      yn = yn-1;
+      else
+      yn = yn+1;
+      set_point(xn,yn,color_black);
+
+   }
+   else{
+      if (dx>=dy)
+      k = k+2*dy;
+      else
+      k = k + 2 *dx;
+      if (dx>=dy){
+         if (sx>=0)
+            xn = xn+1;
+         else
+            xn = xn-1;
+         }
+         else{
+            if (sy>=0)
+            yn = yn+1;
+            else
+            yn = yn-1;
+         }
+         set_point(xn,yn,color_black);
+      }
+
+   }
+  }
+
+
+
